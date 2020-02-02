@@ -34,8 +34,12 @@
 
       function q5(){
       var value2 = $('#input-q5').val();
-      if(!value2.indexOf('@'){
+      var is_mail = value2.includes('@')
+      var domain_name = 
+
+      if(!is_mail){
         alert('이메일이 아닙니다.')
+      return;
       }
           
         
