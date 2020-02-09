@@ -1,0 +1,165 @@
+
+<html>
+<head>
+  <title>homework 0105</title>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <!-- JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+  <!-- 구글폰트 -->
+  <link href="https://fonts.googleapis.com/css?family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+  <!-- homework css 불러오기 -->
+
+  <link rel = "stylesheet" type = "text/css" href="{{url_for('static', filename='styles/index.css')}}">
+
+
+  <script type="text/javascript">
+
+
+
+   function posting(){
+ 	var name = $('#order_name').val();
+      var number = $('#inputGroupSelect01').val();
+      var address = $('#order_address').val();
+      var phone = $('#order_phonenumber').val();
+
+      if(name == ""){
+        alert("주문자 이름을 입력해주세요.")
+        order_name.focus();
+      }else if(number == "--수량을 선택하세요--"){
+        alert("수량을 선택하세요.")
+        inputGroupSelect01.focus();
+      }else if(address == ""){
+        alert("주소를 입력해주세요.")
+        order_address.focus();
+      }else if(phone == "") {
+        alert("전화번호를 입력해주세요.")
+        order_phone.focus();
+      }else{
+
+        $.ajax({
+        type: "POST",
+        url: "/order",
+        data: {name_give : name, number_give : number, address_give : address, phone_give : phone},
+        success: function(response){
+          if(response['result'] == 'success'){
+            alert('포스팅성공')
+            window.location.reload();
+          }else{
+            alert('서버 오류')
+          }
+          console.log(response)
+        }
+      })
+		}
+      }
+
+$(document).ready(function(){
+        $('#orders-box').html('');
+        listing();
+      });
+
+      function listing() {
+        $.ajax({
+          type: "GET",
+          url: "/order",
+          data: {},
+          success: function(response){
+             if (response['result'] == 'success') {
+               let shoppings = response['shoppings'];
+               console.log(shoppings);
+               for (let i = 0; i < shoppings.length; i++) {
+               console.log('test');
+                 make_card(shoppings[i]['name'],shoppings[i]['number'],shoppings[i]['address'],shoppings[i]['phone'])
+               }
+             } else {
+               alert('정보를 받아오지 못했습니다');
+             }
+          }
+        })
+      }
+
+      function make_card(name,number,address,phone) {
+        let temp_html = '<tr>\
+            <td>'+name+'</td>\
+            <td>'+number+'</td>\
+            <td>'+address+'</td>\
+            <td>'+phone+'</td>\
+          </tr>';
+         console.log(temp_html);
+        $('#orders-box').append(temp_html);
+      }
+
+
+</script>
+
+</head>
+
+
+<body>
+  <div class ="whole">
+
+    <!-- 이미지 타이틀 영역 -->
+    <div class ="image">
+      <img src="https://thumbnail.10x10.co.kr/webimage/image/basic600/220/B002207713.jpg?cmd=thumb&w=400&h=400&fit=true&ws=false" ></div>
+
+      <div>
+        <div class="card-body">
+          <p class="card-text">  <span style="font-size: 30px"> 양초를 팝니다. </span> 가격 : 3,000원/개 .</p>
+          <p class="card-text">이 양초는 사실 특별한 힘을 가지고 있어요. 양초를 켜고 소원을 빌면 짜자잔 뭐든지 이뤄지게 된답니다. 하나 사가세요! 대나무 향이 아주 좋아요</p>
+
+        </div>
+      </div>
+      <!-- 하단 인풋 양식 -->
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">주문자 이름</span>
+        </div>
+        <input type="text" class="form-control" id="order_name" >
+      </div>
+
+
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <label class="input-group-text" for="inputGroupSelect01">수량</label>
+        </div>
+        <select class="custom-select" id="inputGroupSelect01">
+          <option selected>--수량을 선택하세요--</option>
+          <option value="1">O1</option>
+          <option value="2">02</option>
+          <option value="3">03</option>
+        </select>
+      </div>
+
+
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">주소</span>
+        </div>
+        <input type="text" class="form-control" id="order_address" >
+      </div>
+
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">전화번호</span>
+        </div>
+        <input type="text" class="form-control" id="order_phonenumber" >
+      </div>
+    </div>
+    <div class ="button">
+      <button onclick="posting()" type="button" class="btn btn-primary">주문하기</button>
+    </div>
+<div>
+	<table class="list-group list-group-flush" id="orders-box">
+</table>
+</div>
+  </body>
+  </html>
